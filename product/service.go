@@ -2,6 +2,7 @@ package product
 
 type Service interface {
 	GetProductById(param *getProductByIdRequest) (*Product, error)
+	GetProducts(params *getProductsRequest) (*ProductList, error)
 }
 
 type service struct {
@@ -15,4 +16,18 @@ func NewService(repo Repository) Service {
 }
 func (s *service) GetProductById(param *getProductByIdRequest) (*Product, error) {
 	return s.repo.GetProductById(param.ProductId)
+}
+
+func (s *service) GetProducts(params *getProductsRequest) (*ProductList, error) {
+	products, err := s.repo.GetProducts(params)
+
+	if err != nil {
+		panic(err)
+	}
+	totalProducts, err := s.repo.GetTotalProducts()
+
+	if err != nil {
+		panic(err)
+	}
+	return &ProductList{Data: products, TotalRecords: totalProducts}, nil
 }
