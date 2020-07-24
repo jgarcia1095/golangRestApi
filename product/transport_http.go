@@ -18,6 +18,9 @@ func MakeHttpHandler(s Service) http.Handler {
 	getProductsHandler := kithttp.NewServer(makeGetProductsEndPoint(s), getProductsRequestDecoder, kithttp.EncodeJSONResponse)
 	r.Method(http.MethodPost, "/paginated", getProductsHandler)
 
+	addProductHandler := kithttp.NewServer(makeAddProductsEndPoint(s), addProductRequestDecoder, kithttp.EncodeJSONResponse)
+	r.Method(http.MethodPost, "/", addProductHandler)
+
 	return r
 }
 
@@ -35,4 +38,13 @@ func getProductByIdRequestDecoder(context context.Context, r *http.Request) (int
 	return getProductByIdRequest{
 		ProductId: productId,
 	}, nil
+}
+
+func addProductRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := getAddProductsRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	if err != nil {
+		panic(err)
+	}
+	return request, nil
 }
