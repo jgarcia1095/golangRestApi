@@ -7,6 +7,7 @@ type Repository interface {
 	GetProducts(params *getProductsRequest) ([]*Product, error)
 	GetTotalProducts() (int, error)
 	InsertProduct(params *getAddProductsRequest) (int64, error)
+	GetBestsEmployee() (*BestEmployee, error)
 }
 
 type repository struct {
@@ -80,4 +81,26 @@ func (repo *repository) InsertProduct(params *getAddProductsRequest) (int64, err
 	}
 	id, _ := result.LastInsertId()
 	return id, nil
+}
+
+func (repo *repository) GetBestsEmployee() (*BestEmployee, error) {
+	const sql = `SELECT e.id ,
+	count(e.id ) as totalVentas,
+	e.first_name ,e.last_name 
+	FROM orders o
+	INNER JOIN employees e ON o.employee_id = e.id 
+	GROUP BY o.employee_id 
+	ORDER BY totalVentas DESC 
+	LIMIT 1`
+
+	row := repo.db.QueryRow(sql)
+	employee := &BestEmployee{}
+
+	err := row.Scan(&employee.ID, &employee.TotalVentas, &employee.FirstName, &employee.LastName)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return employee, nil
 }

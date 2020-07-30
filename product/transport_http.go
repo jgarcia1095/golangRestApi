@@ -21,6 +21,8 @@ func MakeHttpHandler(s Service) http.Handler {
 	addProductHandler := kithttp.NewServer(makeAddProductsEndPoint(s), addProductRequestDecoder, kithttp.EncodeJSONResponse)
 	r.Method(http.MethodPost, "/", addProductHandler)
 
+	getBestEmployeeIdHandler := kithttp.NewServer(makeBestEmmployeeEndPoint(s), getBestEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
+	r.Method(http.MethodGet, "/best", getBestEmployeeIdHandler)
 	return r
 }
 
@@ -47,4 +49,8 @@ func addProductRequestDecoder(context context.Context, r *http.Request) (interfa
 		panic(err)
 	}
 	return request, nil
+}
+
+func getBestEmployeeRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	return getBestEmployeeRequest{}, nil
 }

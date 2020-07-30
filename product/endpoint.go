@@ -24,6 +24,9 @@ type getAddProductsRequest struct {
 	ProductName  string
 }
 
+type getBestEmployeeRequest struct {
+}
+
 func makeGetProductByIdEndPoint(s Service) endpoint.Endpoint {
 	getProductByIdEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getProductByIdRequest)
@@ -58,4 +61,15 @@ func makeAddProductsEndPoint(s Service) endpoint.Endpoint {
 		return productID, nil
 	}
 	return addProductsEndPoint
+}
+
+func makeBestEmmployeeEndPoint(s Service) endpoint.Endpoint {
+	getBestEmployeeEndPoint := func(_ context.Context, _ interface{}) (interface{}, error) {
+		result, err := s.GetBestsEmployee()
+		if err != nil {
+			panic(err)
+		}
+		return result, nil
+	}
+	return getBestEmployeeEndPoint
 }
