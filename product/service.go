@@ -4,7 +4,11 @@ type Service interface {
 	GetProductById(param *getProductByIdRequest) (*Product, error)
 	GetProducts(params *getProductsRequest) (*ProductList, error)
 	InsertProduct(params *getAddProductsRequest) (int64, error)
+	UpdateProduct(params *updateProductsRequest) (int64, error)
+	DeleteProduct(params *deleteProductsRequest) (int64, error)
+
 	GetBestsEmployee() (*BestEmployee, error)
+	InsertEmployee(params *addEmployeesRequest) (int64, error)
 }
 
 type service struct {
@@ -38,6 +42,18 @@ func (s *service) InsertProduct(params *getAddProductsRequest) (int64, error) {
 	return s.repo.InsertProduct(params)
 }
 
+func (s *service) UpdateProduct(params *updateProductsRequest) (int64, error) {
+	return s.repo.UpdateProduct(params)
+}
+
+func (s *service) DeleteProduct(params *deleteProductsRequest) (int64, error) {
+	return s.repo.DeleteProduct(params)
+}
+
 func (s *service) GetBestsEmployee() (*BestEmployee, error) {
 	return s.repo.GetBestsEmployee()
+}
+
+func (s *service) InsertEmployee(params *addEmployeesRequest) (int64, error) {
+	return s.repo.InsertEmployee(params)
 }

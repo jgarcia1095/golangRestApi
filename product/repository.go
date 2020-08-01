@@ -7,7 +7,10 @@ type Repository interface {
 	GetProducts(params *getProductsRequest) ([]*Product, error)
 	GetTotalProducts() (int, error)
 	InsertProduct(params *getAddProductsRequest) (int64, error)
+	UpdateProduct(params *updateProductsRequest) (int64, error)
+	DeleteProduct(params *deleteProductsRequest) (int64, error)
 	GetBestsEmployee() (*BestEmployee, error)
+	InsertEmployee(params *addEmployeesRequest) (int64, error)
 }
 
 type repository struct {
@@ -74,13 +77,44 @@ func (repo *repository) InsertProduct(params *getAddProductsRequest) (int64, err
 	const sql = `INSERT INTO products
 			 (product_code,product_name,category,description,list_price,standard_cost)
 				VALUES(?,?,?,?,?,?)`
-	result, err := repo.db.Exec(sql, params.ProductCode, params.ProductName, params.Description, params.ListPrice,
-		params.ListPrice, params.StandardCost)
+	result, err := repo.db.Exec(sql, params.ProductCode, params.ProductName, params.Category, params.Description, params.ListPrice,
+		params.StandardCost)
 	if err != nil {
 		panic(err)
 	}
 	id, _ := result.LastInsertId()
 	return id, nil
+}
+
+func (repo *repository) UpdateProduct(params *updateProductsRequest) (int64, error) {
+	const sql = `Update products
+				SET product_code = ?,
+				product_name = ?,
+				category = ?,
+				description = ?,
+				list_price = ?,
+				standard_cost = ?
+				WHERE id = ?`
+	_, err := repo.db.Exec(sql, params.ProductCode, params.ProductName, params.Category, params.Description,
+		params.ListPrice, params.StandardCost, params.ID)
+	if err != nil {
+		panic(err)
+	}
+	return params.ID, nil
+}
+
+func (repo *repository) DeleteProduct(params *deleteProductsRequest) (int64, error) {
+	const sql = `DELETE from products
+				WHERE id = ?`
+	result, err := repo.db.Exec(sql, params.ProductID)
+	if err != nil {
+		panic(err)
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		panic(err)
+	}
+	return count, nil
 }
 
 func (repo *repository) GetBestsEmployee() (*BestEmployee, error) {
@@ -103,4 +137,22 @@ func (repo *repository) GetBestsEmployee() (*BestEmployee, error) {
 	}
 
 	return employee, nil
+}
+
+func (repo *repository) InsertEmployee(params *addEmployeesRequest) (int64, error) {
+	const sql = `INSERT INTO employees
+			 (first_name ,last_name ,company ,address ,business_phone,email_address ,
+			fax_number ,home_phone ,job_title ,mobile_phone)
+				VALUES(?,?,?,?,?,?,?,?,?,?)`
+	result, err := repo.db.Exec(sql, params.FirstName, params.LasttName, params.Company,
+		params.BusinessPhone, params.EmailAddress, params.FaxNumber,
+		params.HomePhone, params.JobTitle, params.MobilPhone)
+	if err != nil {
+		panic(err)
+	}
+	id, _ := result.LastInsertId()
+	if err != nil {
+		panic(err)
+	}
+	return id, nil
 }
