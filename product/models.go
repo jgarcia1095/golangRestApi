@@ -1,7 +1,7 @@
 package product
 
 type Product struct {
-	Id           int     `json:"id"`
+	ID           int     `json:"id"`
 	ProductCode  string  `json:"productCode"`
 	ProductName  string  `json:"productName"`
 	Description  string  `json:"description"`
@@ -20,4 +20,14 @@ type BestEmployee struct {
 	TotalVentas int    `json:"totalVentas"`
 	LastName    string `json:"lastName"`
 	FirstName   string `json:"FirstName"`
+}
+
+type ProductTop struct {
+	ID          int     `json:"id"`
+	ProductName string  `json:"product_name"`
+	Vendidos    float64 `json:"vendidos"`
+}
+type ProductTopResponse struct {
+	Data        []*ProductTop `json:"data"`
+	TotalVentas float64       `json:"totalVentas"`
 }

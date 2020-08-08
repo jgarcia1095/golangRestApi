@@ -1,6 +1,10 @@
 package product
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"github.com/golangRestApi/helper"
+)
 
 type Repository interface {
 	GetProductById(product int) (*Product, error)
@@ -11,6 +15,8 @@ type Repository interface {
 	DeleteProduct(params *deleteProductsRequest) (int64, error)
 	GetBestsEmployee() (*BestEmployee, error)
 	InsertEmployee(params *addEmployeesRequest) (int64, error)
+	GetBestSellers() ([]*ProductTop, error)
+	GetTotalVentas() (float64, error)
 }
 
 type repository struct {
@@ -29,10 +35,8 @@ func (repo *repository) GetProductById(productId int) (*Product, error) {
 
 	product := &Product{}
 
-	err := row.Scan(&product.Id, &product.ProductCode, &product.ProductName, &product.Description, &product.StandardCost, &product.ListPrice, &product.Category)
-	if err != nil {
-		panic(err)
-	}
+	err := row.Scan(&product.ID, &product.ProductCode, &product.ProductName, &product.Description, &product.StandardCost, &product.ListPrice, &product.Category)
+	helper.Catch(err)
 	return product, err
 }
 
@@ -43,14 +47,12 @@ func (repo *repository) GetProducts(params *getProductsRequest) ([]*Product, err
 
 	results, err := repo.db.Query(sql, params.Limit, params.Offset)
 
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 
 	var products []*Product
 	for results.Next() {
 		product := &Product{}
-		err = results.Scan(&product.Id, &product.ProductCode, &product.ProductName, &product.Description, &product.StandardCost, &product.ListPrice, &product.Category)
+		err = results.Scan(&product.ID, &product.ProductCode, &product.ProductName, &product.Description, &product.StandardCost, &product.ListPrice, &product.Category)
 		if err != nil {
 			panic(err)
 		}
@@ -66,9 +68,7 @@ func (repo *repository) GetTotalProducts() (int, error) {
 	var total int
 	row := repo.db.QueryRow(sql)
 	err := row.Scan(&total)
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 
 	return total, nil
 }
@@ -79,9 +79,7 @@ func (repo *repository) InsertProduct(params *getAddProductsRequest) (int64, err
 				VALUES(?,?,?,?,?,?)`
 	result, err := repo.db.Exec(sql, params.ProductCode, params.ProductName, params.Category, params.Description, params.ListPrice,
 		params.StandardCost)
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 	id, _ := result.LastInsertId()
 	return id, nil
 }
@@ -97,9 +95,7 @@ func (repo *repository) UpdateProduct(params *updateProductsRequest) (int64, err
 				WHERE id = ?`
 	_, err := repo.db.Exec(sql, params.ProductCode, params.ProductName, params.Category, params.Description,
 		params.ListPrice, params.StandardCost, params.ID)
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 	return params.ID, nil
 }
 
@@ -107,14 +103,46 @@ func (repo *repository) DeleteProduct(params *deleteProductsRequest) (int64, err
 	const sql = `DELETE from products
 				WHERE id = ?`
 	result, err := repo.db.Exec(sql, params.ProductID)
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 	count, err := result.RowsAffected()
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 	return count, nil
+}
+
+func (repo *repository) GetBestSellers() ([]*ProductTop, error) {
+	const sql = `SELECT 
+	od.product_id ,	p.product_name ,SUM(od.quantity *od.unit_price) vendido
+	FROM order_details od
+	INNER JOIN products  p ON od.product_id = p.id 
+	GROUP BY od.product_id 
+	ORDER BY vendido DESC 
+	LIMIT 10`
+
+	results, err := repo.db.Query(sql)
+	helper.Catch(err)
+
+	var products []*ProductTop
+
+	for results.Next() {
+		product := &ProductTop{}
+		err = results.Scan(&product.ID, &product.ProductName, &product.Vendidos)
+		if err != nil {
+			panic(err)
+		}
+		products = append(products, product)
+	}
+	return products, nil
+}
+
+func (repo *repository) GetTotalVentas() (float64, error) {
+	const sql = `SELECT SUM(od.quantity*od.unit_price) vendido
+					FROM order_details od`
+	var total float64
+	row := repo.db.QueryRow(sql)
+	err := row.Scan(&total)
+	helper.Catch(err)
+
+	return total, nil
 }
 
 func (repo *repository) GetBestsEmployee() (*BestEmployee, error) {
@@ -132,9 +160,7 @@ func (repo *repository) GetBestsEmployee() (*BestEmployee, error) {
 
 	err := row.Scan(&employee.ID, &employee.TotalVentas, &employee.FirstName, &employee.LastName)
 
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 
 	return employee, nil
 }
@@ -147,12 +173,8 @@ func (repo *repository) InsertEmployee(params *addEmployeesRequest) (int64, erro
 	result, err := repo.db.Exec(sql, params.FirstName, params.LasttName, params.Company,
 		params.BusinessPhone, params.EmailAddress, params.FaxNumber,
 		params.HomePhone, params.JobTitle, params.MobilPhone)
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 	id, _ := result.LastInsertId()
-	if err != nil {
-		panic(err)
-	}
+	helper.Catch(err)
 	return id, nil
 }

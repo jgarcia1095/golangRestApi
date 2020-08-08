@@ -1,12 +1,14 @@
 package database
 
-import "database/sql"
+import (
+	"database/sql"
+
+	"github.com/golangRestApi/helper"
+)
 
 func InitDb() *sql.DB {
 	connectionString := "root:Qwerty.1@tcp(localhost:3306)/northwind"
 	dataBaseConnection, err := sql.Open("mysql", connectionString)
-	if err != nil {
-		panic(err.Error())
-	}
+	helper.Catch(err)
 	return dataBaseConnection
 }

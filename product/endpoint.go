@@ -6,8 +6,8 @@ import (
 	"github.com/go-kit/kit/endpoint"
 )
 
-type getProductByIdRequest struct {
-	ProductId int
+type getProductByIDRequest struct {
+	ProductID int
 }
 
 type getProductsRequest struct {
@@ -38,6 +38,9 @@ type deleteProductsRequest struct {
 	ProductID string
 }
 
+type getBestSellersRequest struct {
+}
+
 type getBestEmployeeRequest struct {
 }
 
@@ -54,16 +57,16 @@ type addEmployeesRequest struct {
 	MobilPhone    string
 }
 
-func makeGetProductByIdEndPoint(s Service) endpoint.Endpoint {
-	getProductByIdEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
-		req := request.(getProductByIdRequest)
-		product, err := s.GetProductById(&req)
+func makeGetProductByIDEndPoint(s Service) endpoint.Endpoint {
+	getProductByIDEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(getProductByIDRequest)
+		product, err := s.GetProductByID(&req)
 		if err != nil {
 			panic(err)
 		}
 		return product, nil
 	}
-	return getProductByIdEndPoint
+	return getProductByIDEndPoint
 }
 
 func makeGetProductsEndPoint(s Service) endpoint.Endpoint {
@@ -90,16 +93,16 @@ func makeAddProductsEndPoint(s Service) endpoint.Endpoint {
 	return addProductsEndPoint
 }
 
-func makeBestEmmployeeEndPoint(s Service) endpoint.Endpoint {
-	getBestEmployeeEndPoint := func(_ context.Context, _ interface{}) (interface{}, error) {
-		result, err := s.GetBestsEmployee()
-		if err != nil {
-			panic(err)
-		}
-		return result, nil
-	}
-	return getBestEmployeeEndPoint
-}
+// func makeBestEmmployeeEndPoint(s Service) endpoint.Endpoint {
+// 	getBestEmployeeEndPoint := func(_ context.Context, _ interface{}) (interface{}, error) {
+// 		result, err := s.GetBestsEmployee()
+// 		if err != nil {
+// 			panic(err)
+// 		}
+// 		return result, nil
+// 	}
+// 	return getBestEmployeeEndPoint
+// }
 
 func makeAddEmployeeEndPoint(s Service) endpoint.Endpoint {
 	addEmployeeEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
@@ -134,5 +137,16 @@ func makeDeleteProductEndPoint(s Service) endpoint.Endpoint {
 		}
 		return r, nil
 	}
-	return deleteProductsEndPoint 
+	return deleteProductsEndPoint
+}
+
+func makeBestSellersEndPoint(s Service) endpoint.Endpoint {
+	getBestSellersEndPoint := func(_ context.Context, _ interface{}) (interface{}, error) {
+		result, err := s.GetBestSellers()
+		if err != nil {
+			panic(err)
+		}
+		return result, nil
+	}
+	return getBestSellersEndPoint
 }
