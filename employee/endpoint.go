@@ -17,47 +17,39 @@ type getEmployeeRequest struct {
 	Offset int
 }
 
-// type getAddProductsRequest struct {
-// 	Category     string
-// 	Description  string
-// 	ListPrice    string
-// 	StandardCost string
-// 	ProductCode  string
-// 	ProductName  string
-// }
+type getBestEmployeeRequest struct {
+}
 
-// type updateProductsRequest struct {
-// 	ID           int64
-// 	Category     string
-// 	Description  string
-// 	ListPrice    float32
-// 	StandardCost float32
-// 	ProductCode  string
-// 	ProductName  string
-// }
+type addEmployeeRequest struct {
+	FirstName     string
+	LastName      string
+	Address       string
+	EmailAddress  string
+	MobilePhone   string
+	HomePhone     string
+	BusinessPhone string
+	FaxNumber     string
+	JobTitle      string
+	Company       string
+}
 
-// type deleteProductsRequest struct {
-// 	ProductID string
-// }
+type updateEmployeeRequest struct {
+	ID            int64
+	FirstName     string
+	LastName      string
+	Address       string
+	EmailAddress  string
+	MobilePhone   string
+	HomePhone     string
+	BusinessPhone string
+	FaxNumber     string
+	JobTitle      string
+	Company       string
+}
 
-// type getBestSellersRequest struct {
-// }
-
-// type getBestEmployeeRequest struct {
-// }
-
-// type addEmployeesRequest struct {
-// 	Address       string
-// 	BusinessPhone string
-// 	Company       string
-// 	EmailAddress  string
-// 	FaxNumber     string
-// 	FirstName     string
-// 	HomePhone     string
-// 	JobTitle      string
-// 	LasttName     string
-// 	MobilPhone    string
-// }
+type deleteEmployeeRequest struct {
+	EmployeeID string
+}
 
 func makeGetEmployeeByIDEndPoint(s Service) endpoint.Endpoint {
 	getEmployeeByIDEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
@@ -81,72 +73,43 @@ func makeGetEmployeesEndPoint(s Service) endpoint.Endpoint {
 	return getEmployeesEndPoint
 }
 
-// func makeAddProductsEndPoint(s Service) endpoint.Endpoint {
-// 	addProductsEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
-// 		req := request.(getAddProductsRequest)
-// 		productID, err := s.InsertProduct(&req)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		return productID, nil
-// 	}
-// 	return addProductsEndPoint
-// }
+func makeBestEmployeeEndPoint(s Service) endpoint.Endpoint {
+	getBestEmployeeEndPoint := func(_ context.Context, _ interface{}) (interface{}, error) {
+		result, err := s.GetBestEmployee()
+		helper.Catch(err)
+		return result, nil
+	}
+	return getBestEmployeeEndPoint
+}
 
-// // func makeBestEmmployeeEndPoint(s Service) endpoint.Endpoint {
-// // 	getBestEmployeeEndPoint := func(_ context.Context, _ interface{}) (interface{}, error) {
-// // 		result, err := s.GetBestsEmployee()
-// // 		if err != nil {
-// // 			panic(err)
-// // 		}
-// // 		return result, nil
-// // 	}
-// // 	return getBestEmployeeEndPoint
-// // }
+func makeAddEmployeeEndPoint(s Service) endpoint.Endpoint {
+	addEmployeeEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(addEmployeeRequest)
+		employeeID, err := s.InsertEmployee(&req)
+		if err != nil {
+			panic(err)
+		}
+		return employeeID, nil
+	}
+	return addEmployeeEndPoint
+}
 
-// func makeAddEmployeeEndPoint(s Service) endpoint.Endpoint {
-// 	addEmployeeEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
-// 		req := request.(addEmployeesRequest)
-// 		employeeID, err := s.InsertEmployee(&req)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		return employeeID, nil
-// 	}
-// 	return addEmployeeEndPoint
-// }
+func makeUpdateEmployeeEndPoint(s Service) endpoint.Endpoint {
+	updateEmployeeEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(updateEmployeeRequest)
+		r, err := s.UpdateEmployee(&req)
+		helper.Catch(err)
+		return r, nil
+	}
+	return updateEmployeeEndPoint
+}
 
-// func makeUpdateProductEndPoint(s Service) endpoint.Endpoint {
-// 	updateProductsEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
-// 		req := request.(updateProductsRequest)
-// 		r, err := s.UpdateProduct(&req)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		return r, nil
-// 	}
-// 	return updateProductsEndPoint
-// }
-
-// func makeDeleteProductEndPoint(s Service) endpoint.Endpoint {
-// 	deleteProductsEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
-// 		req := request.(deleteProductsRequest)
-// 		r, err := s.DeleteProduct(&req)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		return r, nil
-// 	}
-// 	return deleteProductsEndPoint
-// }
-
-// func makeBestSellersEndPoint(s Service) endpoint.Endpoint {
-// 	getBestSellersEndPoint := func(_ context.Context, _ interface{}) (interface{}, error) {
-// 		result, err := s.GetBestSellers()
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		return result, nil
-// 	}
-// 	return getBestSellersEndPoint
-// }
+func makeDeleteEmployeeEndPoint(s Service) endpoint.Endpoint {
+	deleteEmployeeEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(deleteEmployeeRequest)
+		r, err := s.DeleteEmployee(&req)
+		helper.Catch(err)
+		return r, nil
+	}
+	return deleteEmployeeEndPoint
+}
