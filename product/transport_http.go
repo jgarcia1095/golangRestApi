@@ -31,12 +31,6 @@ func MakeHTTPHandler(s Service) http.Handler {
 	getBestSellerHandler := kithttp.NewServer(makeBestSellersEndPoint(s), getBestSellersRequestDecoder, kithttp.EncodeJSONResponse)
 	r.Method(http.MethodGet, "/bestSellers", getBestSellerHandler)
 
-	// getBestEmployeeIDHandler := kithttp.NewServer(makeBestEmmployeeEndPoint(s), getBestEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
-	// r.Method(http.MethodGet, "/bestSellers", getBestEmployeeIDHandler)
-
-	// addEmployeeIdHandler := kithttp.NewServer(makeAddEmployeeEndPoint(s), addEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
-	// r.Method(http.MethodPost, "/", addEmployeeIdHandler)
-
 	return r
 }
 

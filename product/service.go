@@ -9,7 +9,6 @@ type Service interface {
 	UpdateProduct(params *updateProductsRequest) (int64, error)
 	DeleteProduct(params *deleteProductsRequest) (int64, error)
 	GetBestSellers() (*ProductTopResponse, error)
-	//GetBestsEmployee() (*BestEmployee, error)
 	InsertEmployee(params *addEmployeesRequest) (int64, error)
 }
 

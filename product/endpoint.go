@@ -93,17 +93,6 @@ func makeAddProductsEndPoint(s Service) endpoint.Endpoint {
 	return addProductsEndPoint
 }
 
-// func makeBestEmmployeeEndPoint(s Service) endpoint.Endpoint {
-// 	getBestEmployeeEndPoint := func(_ context.Context, _ interface{}) (interface{}, error) {
-// 		result, err := s.GetBestsEmployee()
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		return result, nil
-// 	}
-// 	return getBestEmployeeEndPoint
-// }
-
 func makeAddEmployeeEndPoint(s Service) endpoint.Endpoint {
 	addEmployeeEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(addEmployeesRequest)

@@ -19,23 +19,17 @@ func MakeHTTPHandler(s Service) http.Handler {
 	getEmployeesHandler := kithttp.NewServer(makeGetEmployeesEndPoint(s), getEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
 	r.Method(http.MethodPost, "/paginated", getEmployeesHandler)
 
-	// addProductHandler := kithttp.NewServer(makeAddProductsEndPoint(s), addProductRequestDecoder, kithttp.EncodeJSONResponse)
-	// r.Method(http.MethodPost, "/", addProductHandler)
+	getBestEmployeeIDHandler := kithttp.NewServer(makeBestEmployeeEndPoint(s), getBestEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
+	r.Method(http.MethodGet, "/best", getBestEmployeeIDHandler)
 
-	// updateProductHandler := kithttp.NewServer(makeUpdateProductEndPoint(s), updateProductRequestDecoder, kithttp.EncodeJSONResponse)
-	// r.Method(http.MethodPut, "/", updateProductHandler)
+	addEmployeeIDHandler := kithttp.NewServer(makeAddEmployeeEndPoint(s), addEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
+	r.Method(http.MethodPost, "/", addEmployeeIDHandler)
 
-	// deleteProductHandler := kithttp.NewServer(makeDeleteProductEndPoint(s), deleteProductRequestDecoder, kithttp.EncodeJSONResponse)
-	// r.Method(http.MethodDelete, "/{id}", deleteProductHandler)
+	updateEmployeeHandler := kithttp.NewServer(makeUpdateEmployeeEndPoint(s), updateEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
+	r.Method(http.MethodPut, "/", updateEmployeeHandler)
 
-	// getBestSellerHandler := kithttp.NewServer(makeBestSellersEndPoint(s), getBestSellersRequestDecoder, kithttp.EncodeJSONResponse)
-	// r.Method(http.MethodGet, "/bestSellers", getBestSellerHandler)
-
-	// getBestEmployeeIDHandler := kithttp.NewServer(makeBestEmmployeeEndPoint(s), getBestEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
-	// r.Method(http.MethodGet, "/bestSellers", getBestEmployeeIDHandler)
-
-	// addEmployeeIdHandler := kithttp.NewServer(makeAddEmployeeEndPoint(s), addEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
-	// r.Method(http.MethodPost, "/", addEmployeeIdHandler)
+	deleteEmployeeHandler := kithttp.NewServer(makeDeleteEmployeeEndPoint(s), deleteEmployeeRequestDecoder, kithttp.EncodeJSONResponse)
+	r.Method(http.MethodDelete, "/{id}", deleteEmployeeHandler)
 
 	return r
 }
@@ -53,37 +47,26 @@ func getEmployeeByIDRequestDecoder(context context.Context, r *http.Request) (in
 	}, nil
 }
 
-// func addProductRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-// 	request := getAddProductsRequest{}
-// 	err := json.NewDecoder(r.Body).Decode(&request)
-// 	helper.Catch(err)
-// 	return request, nil
-// }
+func getBestEmployeeRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	return getBestEmployeeRequest{}, nil
+}
 
-// func updateProductRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-// 	request := updateProductsRequest{}
-// 	err := json.NewDecoder(r.Body).Decode(&request)
-// 	helper.Catch(err)
-// 	return request, nil
-// }
+func addEmployeeRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := addEmployeeRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	helper.Catch(err)
+	return request, nil
+}
 
-// func deleteProductRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-// 	return deleteProductsRequest{
-// 		ProductID: chi.URLParam(r, "id"),
-// 	}, nil
-// }
+func updateEmployeeRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := updateEmployeeRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	helper.Catch(err)
+	return request, nil
+}
 
-// func getBestEmployeeRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-// 	return getBestEmployeeRequest{}, nil
-// }
-
-// func getBestSellersRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-// 	return getBestSellersRequest{}, nil
-// }
-
-// func addEmployeeRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
-// 	request := addEmployeesRequest{}
-// 	err := json.NewDecoder(r.Body).Decode(&request)
-// 	helper.Catch(err)
-// 	return request, nil
-// }
+func deleteEmployeeRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	return deleteEmployeeRequest{
+		EmployeeID: chi.URLParam(r, "id"),
+	}, nil
+}
