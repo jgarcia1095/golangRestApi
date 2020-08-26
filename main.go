@@ -6,6 +6,7 @@ import (
 	"github.com/golangRestApi/customers"
 	"github.com/golangRestApi/database"
 	"github.com/golangRestApi/employee"
+	"github.com/golangRestApi/order"
 	"github.com/golangRestApi/product"
 
 	"github.com/go-chi/chi"
@@ -20,21 +21,25 @@ func main() {
 		productRepository   = product.NewRepository(dataBaseConnection)
 		employeeRepository  = employee.NewRepository(dataBaseConnection)
 		customersRepository = customers.NewRepository(dataBaseConnection)
+		orderRepository     = order.NewRepository(dataBaseConnection)
 	)
 
 	var (
 		productService   product.Service
 		employeeService  employee.Service
 		customersService customers.Service
+		orderService     order.Service
 	)
 
 	productService = product.NewService(productRepository)
 	employeeService = employee.NewService(employeeRepository)
 	customersService = customers.NewService(customersRepository)
+	orderService = order.NewService(orderRepository)
 
 	r := chi.NewRouter()
 	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/employee", employee.MakeHTTPHandler(employeeService))
 	r.Mount("/customers", customers.MakeHTTPHandler(customersService))
+	r.Mount("/orders", order.MakeHTTPHandler(orderService))
 	http.ListenAndServe(":3000", r)
 }
