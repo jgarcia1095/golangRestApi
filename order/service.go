@@ -5,6 +5,7 @@ import "github.com/golangRestApi/helper"
 type Service interface {
 	GetOrderByID(params *getOrderByIDRequest) (*OrderItem, error)
 	GetOrders(params *getOrdersRequest) (*OrderList, error)
+	InsertOrder(params *addOrderRequest) (int64, error)
 }
 
 type service struct {
@@ -29,4 +30,17 @@ func (s *service) GetOrders(params *getOrdersRequest) (*OrderList, error) {
 	helper.Catch(err)
 
 	return &OrderList{Data: orders, TotalRecords: totalOrders}, nil
+}
+
+func (s *service) InsertOrder(params *addOrderRequest) (int64, error) {
+	orderID, err := s.repo.InsertOrder(params)
+	helper.Catch(err)
+
+	for _, detail := range params.OrderDetails {
+		detail.OrderID = orderID
+		_, err := s.repo.InsertOrderDetail(&detail)
+		helper.Catch(err)
+	}
+
+	return orderID, nil
 }
