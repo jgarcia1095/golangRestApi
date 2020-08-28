@@ -23,6 +23,10 @@ func MakeHTTPHandler(s Service) http.Handler {
 
 	addOrderHandler := kithttp.NewServer(makeInsertOrderEndPoint(s), addOrderRequestDecoder, kithttp.EncodeJSONResponse)
 	r.Method(http.MethodPost, "/", addOrderHandler)
+
+	updateOrderHandler := kithttp.NewServer(makeUpdateOrderEndPoint(s), updateOrderRequestDecoder, kithttp.EncodeJSONResponse)
+	r.Method(http.MethodPut, "/", updateOrderHandler)
+
 	return r
 }
 
@@ -43,6 +47,13 @@ func getOrdersRequestDecoder(context context.Context, r *http.Request) (interfac
 }
 
 func addOrderRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
+	request := addOrderRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
+	helper.Catch(err)
+	return request, nil
+}
+
+func updateOrderRequestDecoder(context context.Context, r *http.Request) (interface{}, error) {
 	request := addOrderRequest{}
 	err := json.NewDecoder(r.Body).Decode(&request)
 	helper.Catch(err)

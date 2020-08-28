@@ -13,6 +13,8 @@ type Repository interface {
 	GetTotalOrders(params *getOrdersRequest) (int64, error)
 	InsertOrder(params *addOrderRequest) (int64, error)
 	InsertOrderDetail(params *addOrderDetailRequest) (int64, error)
+	UpdateOrder(params *addOrderRequest) (int64, error)
+	UpdateOrderDetail(params *addOrderDetailRequest) (int64, error)
 }
 
 type repository struct {
@@ -186,4 +188,25 @@ func (repo *repository) InsertOrderDetail(params *addOrderDetailRequest) (int64,
 	helper.Catch(err)
 	id, _ := result.LastInsertId()
 	return id, nil
+}
+
+func (repo *repository) UpdateOrder(params *addOrderRequest) (int64, error) {
+	var sql = `UPDATE orders
+	SET customer_id = ?
+	WHERE id =?`
+
+	_, err := repo.db.Exec(sql, params.CustomerID, params.ID)
+	helper.Catch(err)
+	return params.ID, nil
+}
+
+func (repo *repository) UpdateOrderDetail(params *addOrderDetailRequest) (int64, error) {
+	var sql = `UPDATE order_details
+	SET quantity = ?,
+	unit_price = ?
+	WHERE id =?`
+
+	_, err := repo.db.Exec(sql, params.Quantity, params.UnitPrice, params.ID)
+	helper.Catch(err)
+	return params.ID, nil
 }
