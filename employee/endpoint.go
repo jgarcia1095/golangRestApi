@@ -51,6 +51,13 @@ type deleteEmployeeRequest struct {
 	EmployeeID string
 }
 
+// @Summary Emmpleado po Id
+// @Tags Employee
+// @Accept json
+// @Produce json
+// @Param id path int true "Employee Id"
+// @Success 200 {object} employee.Employee "ok"
+// @Router /employee/{id} [get]
 func makeGetEmployeeByIDEndPoint(s Service) endpoint.Endpoint {
 	getEmployeeByIDEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getEmployeeByIDRequest)
@@ -61,6 +68,13 @@ func makeGetEmployeeByIDEndPoint(s Service) endpoint.Endpoint {
 	return getEmployeeByIDEndPoint
 }
 
+// @Summary Lista de Empleados
+// @Tags Employee
+// @Accept json
+// @Produce json
+// @Param request body employee.getEmployeeRequest true "User Data"
+// @Success 200 {object} employee.EmployeeList "ok"
+// @Router /employee/paginated [post]
 func makeGetEmployeesEndPoint(s Service) endpoint.Endpoint {
 	getEmployeesEndPoint := func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(getEmployeeRequest)

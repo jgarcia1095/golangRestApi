@@ -1,0 +1,147 @@
+definitions:
+  customers.Customer:
+    properties:
+      FirstName:
+        type: string
+      address:
+        type: string
+      businessPhone:
+        type: string
+      city:
+        type: string
+      company:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+    type: object
+  customers.CustomerList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/customers.Customer'
+        type: array
+      totalRecords:
+        type: integer
+    type: object
+  customers.getCustomersRequest:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+    type: object
+  employee.Employee:
+    properties:
+      FirstName:
+        type: string
+      address:
+        type: string
+      businessPhone:
+        type: string
+      company:
+        type: string
+      emailAddress:
+        type: string
+      faxNumber:
+        type: string
+      homePhone:
+        type: string
+      id:
+        type: integer
+      jobTitle:
+        type: string
+      lastName:
+        type: string
+      mobilePhone:
+        type: string
+    type: object
+  employee.EmployeeList:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/employee.Employee'
+        type: array
+      totalRecords:
+        type: integer
+    type: object
+  employee.getEmployeeRequest:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sampe server celler server
+  title: Northwind API
+  version: "1.0"
+paths:
+  /customers/paginated:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/customers.getCustomersRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/customers.CustomerList'
+      summary: Lista de clientes
+      tags:
+      - customers
+  /employee/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Employee Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/employee.Employee'
+      summary: Emmpleado po Id
+      tags:
+      - Employee
+  /employee/paginated:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User Data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/employee.getEmployeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            $ref: '#/definitions/employee.EmployeeList'
+      summary: Lista de Empleados
+      tags:
+      - Employee
+swagger: "2.0"
