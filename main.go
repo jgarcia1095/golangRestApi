@@ -6,6 +6,7 @@ import (
 	"github.com/golangRestApi/customers"
 	"github.com/golangRestApi/database"
 	"github.com/golangRestApi/employee"
+	"github.com/golangRestApi/helper"
 	"github.com/golangRestApi/order"
 	"github.com/golangRestApi/product"
 
@@ -46,6 +47,7 @@ func main() {
 	orderService = order.NewService(orderRepository)
 
 	r := chi.NewRouter()
+	r.Use(helper.GetCors().Handler)
 	r.Mount("/products", product.MakeHTTPHandler(productService))
 	r.Mount("/employee", employee.MakeHTTPHandler(employeeService))
 	r.Mount("/customers", customers.MakeHTTPHandler(customersService))
